@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SP Packagers - Admin Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .admin-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .dashboard-title h1 {
+      font-size: 36px;
+      margin: 0;
+      color: var(--ink);
+    }
+
+    .dashboard-title p {
+      color: var(--muted);
+      margin: 5px 0 0 0;
+    }
+
+    .refresh-btn {
+      background: var(--brand);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .refresh-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      border-color: var(--brand);
+      box-shadow: 0 4px 12px rgba(225, 6, 0, 0.1);
+    }
+
+    .stat-card h3 {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 0 0 10px 0;
+    }
+
+    .stat-card .number {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    .orders-section h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
+      color: var(--ink);
+    }
+
+    .order-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .order-card:hover {
+      border-color: var(--brand);
+      box-shadow: 0 4px 12px rgba(225, 6, 0, 0.08);
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .order-id {
+      background: var(--light);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-weight: 700;
+      color: var(--brand);
+      font-size: 14px;
+    }
+
+    .order-time {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .order-status {
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .order-status.New {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .order-status.Confirmed {
+      background: #cfe2ff;
+      color: #084298;
+    }
+
+    .order-status.Packed {
+      background: #d1ecf1;
+      color: #0c5460;
+    }
+
+    .order-status.Shipped {
+      background: #e7d4f5;
+      color: #5a21b5;
+    }
+
+    .order-status.Delivered {
+      background: #d1e7dd;
+      color: #0f5132;
+    }
+
+    .order-status.Cancelled {
+      background: #f8d7da;
+      color: #842029;
+    }
+
+    .customer-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .customer-detail {
+      font-size: 13px;
+    }
+
+    .customer-detail b {
+      color: var(--muted);
+      display: block;
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .customer-detail p {
+      margin: 0;
+      color: var(--ink);
+    }
+
+    .items-list {
+      background: var(--light);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .items-list h4 {
+      margin: 0 0 10px 0;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    .item-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 13px;
+    }
+
+    .item-row:last-child {
+      border-bottom: none;
+    }
+
+    .order-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .total-amount {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--brand);
+    }
+
+    .status-select {
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: white;
+      color: var(--ink);
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+
+    .empty-state svg {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 20px;
+      opacity: 0.3;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .order-header {
+        flex-direction: column;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .customer-info {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img class="brand-logo" src="images/sp-packagers-logo.png" alt="SP Packagers">
+      <div>
+        <b>SP Packagers</b>
+        <small>Order Management</small>
+      </div>
+    </div>
+    <nav>
+      <a href="/">← Back to Store</a>
+    </nav>
+  </header>
+
+  <main class="admin-container">
+    <div class="dashboard-header">
+      <div class="dashboard-title">
+        <h1>Delivery Orders Dashboard</h1>
+        <p>Manage packaging orders for delivery updates</p>
+      </div>
+      <button class="refresh-btn" onclick="loadOrders()">🔄 Refresh</button>
+    </div>
+
+    <div style="text-align: center; display: none;" id="loading-indicator">
+      <p style="color: var(--brand); font-weight: 600;">⏳ Loading orders...</p>
+    </div>
+
+    <div id="stats-container"></div>
+
+    <div style="background: white; padding: 20px; border-radius: 12px; border: 1px solid var(--line); margin-bottom: 30px;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+        <div>
+          <label style="display: block; font-weight: 600; font-size: 13px; margin-bottom: 8px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px;">🔍 Search Orders</label>
+          <input type="text" id="searchInput" placeholder="Search by Order ID, Name, Phone..." 
+                 style="width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px;"
+                 oninput="filterOrders()">
+        </div>
+        <div>
+          <label style="display: block; font-weight: 600; font-size: 13px; margin-bottom: 8px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px;">📊 Filter by Status</label>
+          <select id="statusFilter" style="width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px;" onchange="filterOrders()">
+            <option value="">All Statuses</option>
+            <option value="New">New</option>
+            <option value="Confirmed">Confirmed</option>
+            <option value="Packed">Packed</option>
+            <option value="Shipped">Shipped</option>
+            <option value="Delivered">Delivered</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
+        <div>
+          <label style="display: block; font-weight: 600; font-size: 13px; margin-bottom: 8px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px;">💰 Amount Range</label>
+          <select id="amountFilter" style="width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px;" onchange="filterOrders()">
+            <option value="">All Amounts</option>
+            <option value="0-500">₹0 - ₹500</option>
+            <option value="500-1000">₹500 - ₹1000</option>
+            <option value="1000-5000">₹1000 - ₹5000</option>
+            <option value="5000+">₹5000+</option>
+          </select>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: flex-end;">
+          <button onclick="resetFilters()" style="flex: 1; padding: 10px 12px; background: var(--light); border: 1px solid var(--line); border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px;">
+            🔄 Reset
+          </button>
+          <button onclick="exportToCSV()" style="flex: 1; padding: 10px 12px; background: var(--brand); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px;">
+            📥 Export CSV
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="orders-section">
+      <h2>Recent Orders</h2>
+      <div id="orders-container"></div>
+    </div>
+  </main>
+
+  <script>
+    let allOrders = [];
+
+    async function loadOrders() {
+      try {
+        console.log("Loading orders...");
+        document.getElementById("loading-indicator").style.display = "block";
+        
+        const response = await fetch("/api/orders");
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        allOrders = await response.json();
+        console.log("Orders loaded:", allOrders);
+
+        // Calculate stats
+        const stats = {
+          total: allOrders.length,
+          New: 0,
+          Confirmed: 0,
+          Packed: 0,
+          Shipped: 0,
+          Delivered: 0,
+          Cancelled: 0
+        };
+
+        allOrders.forEach(order => {
+          if (stats[order.status] !== undefined) {
+            stats[order.status]++;
+          }
+        });
+
+        // Render stats
+        renderStats(stats);
+
+        // Render orders
+        renderOrders(allOrders);
+        
+        document.getElementById("loading-indicator").style.display = "none";
+        console.log("Orders rendered successfully");
+      } catch (error) {
+        document.getElementById("loading-indicator").style.display = "none";
+        console.error("Error loading orders:", error);
+        document.getElementById("orders-container").innerHTML = 
+          '<div class="empty-state"><p>❌ Error loading orders: ' + error.message + '</p></div>';
+      }
+    }
+
+    function filterOrders() {
+      const searchText = document.getElementById("searchInput").value.toLowerCase();
+      const statusFilter = document.getElementById("statusFilter").value;
+      const amountFilter = document.getElementById("amountFilter").value;
+
+      const filtered = allOrders.filter(order => {
+        // Search filter
+        const matchesSearch = 
+          order.id.toLowerCase().includes(searchText) ||
+          order.customer.name.toLowerCase().includes(searchText) ||
+          order.customer.phone.includes(searchText) ||
+          (order.customer.business && order.customer.business.toLowerCase().includes(searchText));
+
+        // Status filter
+        const matchesStatus = 
+          !statusFilter || order.status === statusFilter;
+
+        // Amount filter
+        let matchesAmount = true;
+        if (amountFilter) {
+          if (amountFilter === "0-500") matchesAmount = order.total >= 0 && order.total <= 500;
+          else if (amountFilter === "500-1000") matchesAmount = order.total > 500 && order.total <= 1000;
+          else if (amountFilter === "1000-5000") matchesAmount = order.total > 1000 && order.total <= 5000;
+          else if (amountFilter === "5000+") matchesAmount = order.total > 5000;
+        }
+
+        return matchesSearch && matchesStatus && matchesAmount;
+      });
+
+      renderOrders(filtered);
+    }
+
+    function resetFilters() {
+      document.getElementById("searchInput").value = "";
+      document.getElementById("statusFilter").value = "";
+      document.getElementById("amountFilter").value = "";
+      renderOrders(allOrders);
+    }
+
+    function exportToCSV() {
+      const searchText = document.getElementById("searchInput").value.toLowerCase();
+      const statusFilter = document.getElementById("statusFilter").value;
+      const amountFilter = document.getElementById("amountFilter").value;
+
+      const filtered = allOrders.filter(order => {
+        const matchesSearch = 
+          order.id.toLowerCase().includes(searchText) ||
+          order.customer.name.toLowerCase().includes(searchText) ||
+          order.customer.phone.includes(searchText) ||
+          (order.customer.business && order.customer.business.toLowerCase().includes(searchText));
+
+        const matchesStatus = !statusFilter || order.status === statusFilter;
+
+        let matchesAmount = true;
+        if (amountFilter) {
+          if (amountFilter === "0-500") matchesAmount = order.total >= 0 && order.total <= 500;
+          else if (amountFilter === "500-1000") matchesAmount = order.total > 500 && order.total <= 1000;
+          else if (amountFilter === "1000-5000") matchesAmount = order.total > 1000 && order.total <= 5000;
+          else if (amountFilter === "5000+") matchesAmount = order.total > 5000;
+        }
+
+        return matchesSearch && matchesStatus && matchesAmount;
+      });
+
+      // CSV header
+      const headers = ["Order ID", "Date", "Customer Name", "Phone", "Business", "Items", "Subtotal", "Delivery", "Total", "Payment", "Status"];
+      
+      // CSV rows
+      const rows = filtered.map(order => [
+        order.id,
+        new Date(order.createdAt).toLocaleString("en-IN"),
+        order.customer.name,
+        order.customer.phone,
+        order.customer.business || "N/A",
+        order.items.map(i => `${i.name} x${i.qty}`).join("; "),
+        order.subtotal,
+        order.delivery,
+        order.total,
+        order.payment,
+        order.status
+      ]);
+
+      // Create CSV content
+      const csvContent = [
+        headers.join(","),
+        ...rows.map(row => row.map(cell => `"${cell}"`).join(","))
+      ].join("\n");
+
+      // Download
+      const blob = new Blob([csvContent], { type: "text/csv" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `SP_Packagers_Orders_${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    }
+
+    function renderStats(stats) {
+      const statuses = ["total", "New", "Confirmed", "Packed", "Shipped", "Delivered", "Cancelled"];
+      const labels = ["Total Orders", "New", "Confirmed", "Packed", "Shipped", "Delivered", "Cancelled"];
+      
+      let html = '<div class="stats-grid">';
+      statuses.forEach((status, i) => {
+        html += `
+          <div class="stat-card">
+            <h3>${labels[i]}</h3>
+            <div class="number">${stats[status]}</div>
+          </div>
+        `;
+      });
+      html += '</div>';
+      
+      document.getElementById("stats-container").innerHTML = html;
+    }
+
+    function renderOrders(orders) {
+      if (orders.length === 0) {
+        document.getElementById("orders-container").innerHTML = 
+          '<div class="empty-state"><p>📦 No orders found matching filters</p></div>';
+        return;
+      }
+
+      let html = '';
+      orders.reverse().forEach(order => {
+        const date = new Date(order.createdAt).toLocaleString("en-IN");
+        const itemsHtml = order.items
+          .map(item => `
+            <div class="item-row">
+              <span>${item.name} × ${item.qty}</span>
+              <span>₹${(item.price * item.qty).toLocaleString("en-IN")}</span>
+            </div>
+          `)
+          .join('');
+
+        html += `
+          <div class="order-card">
+            <div class="order-header">
+              <div>
+                <span class="order-id">${order.id}</span>
+                <div class="order-time">📅 ${date}</div>
+              </div>
+              <select class="status-select order-status ${order.status}" 
+                      onchange="updateOrderStatus('${order.id}', this.value)">
+                <option value="New" ${order.status === 'New' ? 'selected' : ''}>New</option>
+                <option value="Confirmed" ${order.status === 'Confirmed' ? 'selected' : ''}>Confirmed</option>
+                <option value="Packed" ${order.status === 'Packed' ? 'selected' : ''}>Packed</option>
+                <option value="Shipped" ${order.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
+                <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                <option value="Cancelled" ${order.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+              </select>
+            </div>
+
+            <div class="customer-info">
+              <div class="customer-detail">
+                <b>👤 Name</b>
+                <p>${order.customer.name}</p>
+              </div>
+              <div class="customer-detail">
+                <b>📱 Phone</b>
+                <p>${order.customer.phone}</p>
+              </div>
+              <div class="customer-detail">
+                <b>🏢 Business</b>
+                <p>${order.customer.business || "Individual"}</p>
+              </div>
+              <div class="customer-detail">
+                <b>📧 Email</b>
+                <p>${order.customer.email || "N/A"}</p>
+              </div>
+              <div class="customer-detail">
+                <b>📍 Address</b>
+                <p>${order.customer.address.replace(/\n/g, ", ")}</p>
+              </div>
+              <div class="customer-detail">
+                <b>💳 Payment</b>
+                <p>${order.payment}</p>
+              </div>
+            </div>
+
+            <div class="items-list">
+              <h4>📦 Items Ordered</h4>
+              ${itemsHtml}
+            </div>
+
+            <div class="order-footer">
+              <div style="text-align: right;">
+                <div style="color: var(--muted); font-size: 12px; margin-bottom: 5px;">Subtotal</div>
+                <div style="font-size: 14px; color: var(--ink);">₹${order.subtotal.toLocaleString("en-IN")}</div>
+              </div>
+              <div style="text-align: right;">
+                <div style="color: var(--muted); font-size: 12px; margin-bottom: 5px;">Delivery</div>
+                <div style="font-size: 14px; color: var(--ink);">₹${order.delivery.toLocaleString("en-IN")}</div>
+              </div>
+              <div style="text-align: right; border-left: 1px solid var(--line); padding-left: 15px;">
+                <div class="total-amount">₹${order.total.toLocaleString("en-IN")}</div>
+                <div style="color: var(--muted); font-size: 12px;">Total</div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      document.getElementById("orders-container").innerHTML = html;
+    }
+
+    async function updateOrderStatus(orderId, newStatus) {
+      try {
+        console.log("Updating order", orderId, "to", newStatus);
+        const response = await fetch(`/api/orders/${orderId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status: newStatus })
+        });
+
+        if (response.ok) {
+          console.log("Order updated successfully");
+          loadOrders();
+        } else {
+          console.error("Error updating order:", response.status);
+        }
+      } catch (error) {
+        console.error("Error updating order:", error);
+      }
+    }
+
+    // Load orders on page load
+    console.log("Admin dashboard loaded");
+    loadOrders();
+  </script>
+</body>
+</html>
