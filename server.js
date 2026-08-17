@@ -147,8 +147,7 @@ function writeOrders(orders) {
 // WHATSAPP WEBHOOK VERIFICATION
 // =============================
 
-const VERIFY_TOKEN =
-  process.env.WEBHOOK_VERIFY_TOKEN;
+const VERIFY_TOKEN = process.env.WEBHOOK_VERIFY_TOKEN;
 
 app.get("/webhook", (req, res) => {
   const mode = req.query["hub.mode"];
@@ -178,13 +177,8 @@ app.get("/webhook", (req, res) => {
 // =============================
 
 app.post("/webhook", (req, res) => {
-
   console.log("📩 WhatsApp webhook received:");
-
-  console.log(
-    JSON.stringify(req.body, null, 2)
-  );
-
+  console.log(JSON.stringify(req.body, null, 2));
   res.sendStatus(200);
 });
 
@@ -193,68 +187,27 @@ app.post("/webhook", (req, res) => {
 // =============================
 
 async function sendWhatsAppOrder(order) {
+  const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
+  const accessToken = process.env.WHATSAPP_ACCESS_TOKEN;
+  const recipient = process.env.WHATSAPP_RECIPIENT;
+  const apiVersion = process.env.WHATSAPP_API_VERSION || "v25.0";
 
-  const phoneNumberId =
-    process.env.WHATSAPP_PHONE_NUMBER_ID;
-
-  const accessToken =
-    process.env.WHATSAPP_ACCESS_TOKEN;
-
-  const recipient =
-    process.env.WHATSAPP_RECIPIENT;
-
-  const apiVersion =
-    process.env.WHATSAPP_API_VERSION ||
-    "v25.0";
-
-  // Check configuration
-
-  if (
-    !phoneNumberId ||
-    !accessToken ||
-    !recipient
-  ) {
-
-    console.log(
-      "❌ WhatsApp settings are missing in .env"
-    );
-
+  if (!phoneNumberId || !accessToken || !recipient) {
+    console.log("❌ WhatsApp settings are missing in .env");
     return {
       success: false,
-      error:
-        "WhatsApp configuration missing"
+      error: "WhatsApp configuration missing"
     };
   }
 
-  // =============================
-  // PRODUCTS
-  // =============================
-
   const itemsText = order.items
     .map((item) => {
-
-      const name =
-        item.name ||
-        item.title ||
-        "Product";
-
-      const quantity =
-        item.quantity ||
-        item.qty ||
-        1;
-
-      const price =
-        item.price || 0;
-
-      return (
-        `• ${name} x ${quantity} = ₹${price}`
-      );
+      const name = item.name || item.title || "Product";
+      const quantity = item.quantity || item.qty || 1;
+      const price = item.price || 0;
+      return `• ${name} x ${quantity} = ₹${price}`;
     })
     .join("\n");
-
-  // =============================
-  // MESSAGE
-  // =============================
 
   const message = `
 🔔 NEW ORDER - SP PACKAGERS
@@ -283,112 +236,54 @@ ${order.payment}
 ${order.note || "No note"}
 
 🕒 Order Time:
-${new Date(
-    order.createdAt
-  ).toLocaleString("en-IN")}
+${new Date(order.createdAt).toLocaleString("en-IN")}
 `;
 
-  // =============================
-  // SEND TO WHATSAPP
-  // =============================
-
   try {
-
     const response = await fetch(
       `https://graph.facebook.com/${apiVersion}/${phoneNumberId}/messages`,
       {
         method: "POST",
-
         headers: {
-          "Authorization":
-            `Bearer ${accessToken}`,
-
-          "Content-Type":
-            "application/json"
+          "Authorization": `Bearer ${accessToken}`,
+          "Content-Type": "application/json"
         },
-
         body: JSON.stringify({
-
-          messaging_product:
-            "whatsapp",
-
-          recipient_type:
-            "individual",
-
+          messaging_product: "whatsapp",
+          recipient_type: "individual",
           to: recipient,
-
           type: "text",
-
           text: {
             preview_url: false,
             body: message.trim()
           }
-
         })
       }
     );
 
-    const data =
-      await response.json();
-
-    // =============================
-    // API ERROR
-    // =============================
+    const data = await response.json();
 
     if (!response.ok) {
-
-      console.error(
-        "❌ WhatsApp API Error:"
-      );
-
-      console.error(
-        JSON.stringify(
-          data,
-          null,
-          2
-        )
-      );
-
+      console.error("❌ WhatsApp API Error:");
+      console.error(JSON.stringify(data, null, 2));
       return {
         success: false,
-        error:
-          data?.error?.message ||
-          "WhatsApp message failed"
+        error: data?.error?.message || "WhatsApp message failed"
       };
     }
 
-    // =============================
-    // SUCCESS
-    // =============================
-
-    console.log(
-      "✅ WhatsApp API accepted message."
-    );
-
-    console.log(
-      "Message ID:",
-      data.messages?.[0]?.id
-    );
+    console.log("✅ WhatsApp API accepted message.");
+    console.log("Message ID:", data.messages?.[0]?.id);
 
     return {
       success: true,
-
-      messageId:
-        data.messages?.[0]?.id ||
-        null
+      messageId: data.messages?.[0]?.id || null
     };
-
   } catch (error) {
-
-    console.error(
-      "❌ WhatsApp connection error:",
-      error
-    );
-
+    console.error("❌ WhatsApp connection error:", error);
     return {
       success: false,
-      error:
-        "Could not connect to WhatsApp API"
+      error: "Could not connect to WhatsApp API"
     };
   }
 }
@@ -398,62 +293,25 @@ ${new Date(
 // =============================
 
 async function sendSMSOrder(order) {
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+  const twilioPhone = process.env.TWILIO_PHONE_NUMBER;
+  const recipientPhone = process.env.SMS_RECIPIENT_PHONE;
 
-  const accountSid =
-    process.env.TWILIO_ACCOUNT_SID;
-
-  const authToken =
-    process.env.TWILIO_AUTH_TOKEN;
-
-  const twilioPhone =
-    process.env.TWILIO_PHONE_NUMBER;
-
-  const recipientPhone =
-    process.env.SMS_RECIPIENT_PHONE;
-
-  // Check configuration
-
-  if (
-    !accountSid ||
-    !authToken ||
-    !twilioPhone ||
-    !recipientPhone
-  ) {
-
-    console.log(
-      "❌ SMS settings are missing in .env"
-    );
-
+  if (!accountSid || !authToken || !twilioPhone || !recipientPhone) {
+    console.log("❌ SMS settings are missing in .env");
     return {
       success: false,
-      error:
-        "SMS configuration missing"
+      error: "SMS configuration missing"
     };
   }
 
-  // =============================
-  // CREATE MESSAGE
-  // =============================
-
   const itemsText = order.items
     .map((item) => {
-
-      const name =
-        item.name ||
-        item.title ||
-        "Product";
-
-      const quantity =
-        item.quantity ||
-        item.qty ||
-        1;
-
-      const price =
-        item.price || 0;
-
-      return (
-        `${name} x${quantity} = ₹${price}`
-      );
+      const name = item.name || item.title || "Product";
+      const quantity = item.quantity || item.qty || 1;
+      const price = item.price || 0;
+      return `${name} x${quantity} = ₹${price}`;
     })
     .join("\n");
 
@@ -474,58 +332,29 @@ Delivery: ₹${order.delivery}
 Total: ₹${order.total}
 
 Payment: ${order.payment}
-Time: ${new Date(
-    order.createdAt
-  ).toLocaleString("en-IN")}
+Time: ${new Date(order.createdAt).toLocaleString("en-IN")}
 `.trim();
 
-  // =============================
-  // SEND SMS VIA TWILIO
-  // =============================
-
   try {
+    const client = twilio(accountSid, authToken);
+    const response = await client.messages.create({
+      body: message,
+      from: twilioPhone,
+      to: recipientPhone
+    });
 
-    const client = twilio(
-      accountSid,
-      authToken
-    );
-
-    const response =
-      await client.messages.create({
-
-        body: message,
-
-        from: twilioPhone,
-
-        to: recipientPhone
-      });
-
-    console.log(
-      "✅ SMS sent successfully"
-    );
-
-    console.log(
-      "Message SID:",
-      response.sid
-    );
+    console.log("✅ SMS sent successfully");
+    console.log("Message SID:", response.sid);
 
     return {
       success: true,
       messageId: response.sid
     };
-
   } catch (error) {
-
-    console.error(
-      "❌ SMS Error:",
-      error.message
-    );
-
+    console.error("❌ SMS Error:", error.message);
     return {
       success: false,
-      error:
-        error.message ||
-        "SMS failed to send"
+      error: error.message || "SMS failed to send"
     };
   }
 }
@@ -535,15 +364,8 @@ Time: ${new Date(
 // =============================
 
 app.get("/api/orders", (req, res) => {
-
   const orders = readOrders();
-
-  orders.sort(
-    (a, b) =>
-      new Date(b.createdAt) -
-      new Date(a.createdAt)
-  );
-
+  orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   res.json(orders);
 });
 
@@ -551,231 +373,106 @@ app.get("/api/orders", (req, res) => {
 // CREATE NEW ORDER
 // =============================
 
-app.post(
-  "/api/orders",
-  async (req, res) => {
+app.post("/api/orders", async (req, res) => {
+  const body = req.body || {};
 
-    const body = req.body || {};
-
-    // =============================
-    // VALIDATION
-    // =============================
-
-    if (
-      !body.customer?.name ||
-      !body.customer?.phone ||
-      !body.items?.length
-    ) {
-
-      return res.status(400).json({
-        error:
-          "Customer name, phone and at least one product are required."
-      });
-    }
-
-    const orders =
-      readOrders();
-
-    // =============================
-    // CREATE ORDER
-    // =============================
-
-    const order = {
-
-      id:
-        "SP-" +
-        Date.now()
-          .toString()
-          .slice(-8),
-
-      createdAt:
-        new Date().toISOString(),
-
-      status:
-        "New",
-
-      customer:
-        body.customer,
-
-      items:
-        body.items,
-
-      subtotal:
-        Number(
-          body.subtotal || 0
-        ),
-
-      delivery:
-        Number(
-          body.delivery || 0
-        ),
-
-      total:
-        Number(
-          body.total || 0
-        ),
-
-      payment:
-        body.payment ||
-        "Cash on Delivery",
-
-      note:
-        body.note || ""
-    };
-
-    // =============================
-    // SAVE ORDER
-    // =============================
-
-    orders.push(order);
-
-    writeOrders(orders);
-
-    console.log(
-      `🛒 New order received: ${order.id}`
-    );
-
-    // =============================
-    // SEND WHATSAPP NOTIFICATION
-    // =============================
-
-    let whatsappResult = null;
-
-    if (
-      process.env.WHATSAPP_PHONE_NUMBER_ID &&
-      process.env.WHATSAPP_ACCESS_TOKEN &&
-      process.env.WHATSAPP_RECIPIENT
-    ) {
-      whatsappResult =
-        await sendWhatsAppOrder(
-          order
-        );
-    } else {
-      console.log(
-        "⚠️  WhatsApp credentials not configured, skipping WhatsApp notification"
-      );
-    }
-
-    // =============================
-    // SEND SMS NOTIFICATION
-    // =============================
-
-    let smsResult = null;
-
-    // Send SMS if Twilio credentials are configured
-    if (
-      process.env.TWILIO_ACCOUNT_SID &&
-      process.env.TWILIO_AUTH_TOKEN &&
-      process.env.TWILIO_PHONE_NUMBER
-    ) {
-      smsResult =
-        await sendSMSOrder(
-          order
-        );
-    } else {
-      console.log(
-        "⚠️  SMS credentials not configured, skipping SMS notification"
-      );
-    }
-
-    // =============================
-    // RESPONSE
-    // =============================
-
-    res.status(201).json({
-
-      ...order,
-
-      whatsapp:
-        whatsappResult,
-
-      sms:
-        smsResult,
-
-      message:
-        "✅ Order created successfully"
-
+  if (!body.customer?.name || !body.customer?.phone || !body.items?.length) {
+    return res.status(400).json({
+      error: "Customer name, phone and at least one product are required."
     });
-
   }
-);
+
+  const orders = readOrders();
+
+  const order = {
+    id: "SP-" + Date.now().toString().slice(-8),
+    createdAt: new Date().toISOString(),
+    status: "New",
+    customer: body.customer,
+    items: body.items,
+    subtotal: Number(body.subtotal || 0),
+    delivery: Number(body.delivery || 0),
+    total: Number(body.total || 0),
+    payment: body.payment || "Cash on Delivery",
+    note: body.note || ""
+  };
+
+  orders.push(order);
+  writeOrders(orders);
+
+  console.log(`🛒 New order received: ${order.id}`);
+
+  let whatsappResult = null;
+  if (
+    process.env.WHATSAPP_PHONE_NUMBER_ID &&
+    process.env.WHATSAPP_ACCESS_TOKEN &&
+    process.env.WHATSAPP_RECIPIENT
+  ) {
+    whatsappResult = await sendWhatsAppOrder(order);
+  } else {
+    console.log("⚠️ WhatsApp credentials not configured, skipping WhatsApp notification");
+  }
+
+  let smsResult = null;
+  if (
+    process.env.TWILIO_ACCOUNT_SID &&
+    process.env.TWILIO_AUTH_TOKEN &&
+    process.env.TWILIO_PHONE_NUMBER
+  ) {
+    smsResult = await sendSMSOrder(order);
+  } else {
+    console.log("⚠️ SMS credentials not configured, skipping SMS notification");
+  }
+
+  res.status(201).json({
+    ...order,
+    whatsapp: whatsappResult,
+    sms: smsResult,
+    message: "✅ Order created successfully"
+  });
+});
 
 // =============================
 // UPDATE ORDER STATUS
 // =============================
 
-app.patch(
-  "/api/orders/:id",
-  (req, res) => {
+app.patch("/api/orders/:id", (req, res) => {
+  const orders = readOrders();
+  const order = orders.find((o) => o.id === req.params.id);
 
-    const orders =
-      readOrders();
-
-    const order =
-      orders.find(
-        (o) =>
-          o.id ===
-          req.params.id
-      );
-
-    if (!order) {
-
-      return res
-        .status(404)
-        .json({
-          error:
-            "Order not found"
-        });
-    }
-
-    if (
-      req.body.status
-    ) {
-
-      order.status =
-        req.body.status;
-    }
-
-    writeOrders(orders);
-
-    res.json(order);
+  if (!order) {
+    return res.status(404).json({ error: "Order not found" });
   }
-);
+
+  if (req.body.status) {
+    order.status = req.body.status;
+  }
+
+  writeOrders(orders);
+  res.json(order);
+});
 
 // =============================
 // WEBSITE FALLBACK
 // =============================
 
 app.get("*", (req, res) => {
-
-  res.sendFile(
-    path.join(
-      __dirname,
-      "public",
-      "index.html"
-    )
-  );
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 // =============================
-// START SERVER
+// EXPORTS (For multi-file modular usage)
+// =============================
+module.exports = { app, readOrders, writeOrders };
+
+// =============================
+// START SERVER (Render host binding fix)
 // =============================
 
-app.listen(
-  PORT,
-  () => {
-
-    console.log(
-      `🚀 SP Packagers running at http://localhost:${PORT}`
-    );
-
-    console.log(
-      "📱 WhatsApp Cloud API: ENABLED"
-    );
-
-    console.log(
-      "🔗 Webhook endpoint: /webhook"
-    );
-
-  }
-);
+if (require.main === module) {
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`🚀 SP Packagers running at http://0.0.0.0:${PORT}`);
+    console.log("📱 WhatsApp Cloud API: ENABLED");
+    console.log("🔗 Webhook endpoint: /webhook");
+  });
+}
