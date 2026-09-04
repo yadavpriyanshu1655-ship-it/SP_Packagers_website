@@ -1,486 +1,858 @@
-const products = [
+:root{
+  --ink:#111111;
+  --muted:#555555;
+  --brand:#e10600;
+  --light:#f7f7f7;
+  --line:#dddddd;
+  --accent:#ffe5e5;
+}
 
-  {
-    id: 1,
-    name: "250g Box",
-    cat: "Bakery",
-    price: 7.50,
-    unit: "piece",
-    icon: "📦",
-    image: "/images/250g-box.png",
-    desc: "250g cake box, size 7 × 7 × 5 inch."
-  },
+*{
+  box-sizing:border-box;
+}
 
-  {
-    id: 2,
-    name: "250g Base",
-    cat: "Bakery",
-    price: 3.50,
-    unit: "piece",
-    icon: "📦",
-    image: "/images/base.png",
-    desc: "250g cake box base."
-  },
+html{
+  scroll-behavior:smooth;
+}
 
-  {
-    id: 3,
-    name: "½ kg Box",
-    cat: "Bakery",
-    price: 10,
-    unit: "piece",
-    icon: "📦",
-    image: "/images/half-kg-box.png",
-    desc: "½ kg cake box, size 8 × 8 × 5.5 inch."
-  },
+body{
+  margin:0;
+  font-family:Inter,Arial,sans-serif;
+  color:var(--ink);
+  background:#fff;
+}
 
-  {
-    id: 4,
-    name: "½ kg Window Box",
-    cat: "Bakery",
-    price: 12,
-    unit: "piece",
-    icon: "📦",
-    image: "/images/half-kg-window-box.png",
-    desc: "½ kg window cake box, size 8 × 8 × 5.5 inch."
-  },
+.topbar{
+  height:74px;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 6%;
+  position:sticky;
+  top:0;
+  background:#fff;
+  z-index:20;
+}
 
-  {
-    id: 5,
-    name: "½ kg Base",
-    cat: "Bakery",
-    price: 4,
-    unit: "piece",
-    icon: "📦",
-    image: "/images/base.png",
-    desc: "½ kg cake box base."
-  },
+.brand{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
 
-  {
-    id: 6,
-    name: "1 kg Box",
-    cat: "Bakery",
-    price: 15,
-    unit: "piece",
-    icon: "📦",
-    image: "/images/1kg-box.png",
-    desc: "1 kg cake box, size 10 × 10 × 6 inch."
-  },
+.logo{
+  width:42px;
+  height:42px;
+  background:var(--brand);
+  color:#fff;
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  font-weight:800;
+}
 
-  {
-    id: 7,
-    name: "1 kg Base",
-    cat: "Bakery",
-    price: 7,
-    unit: "piece",
-    icon: "📦",
-    image: "/images/base.png",
-    desc: "1 kg cake box base."
-  },
+.brand b{
+  display:block;
+  font-size:18px;
+}
 
-  {
-    id: 8,
-    name: "1.5 kg Box",
-    cat: "Bakery",
-    price: 40,
-    unit: "piece",
-    icon: "📦",
-    image: "/images/1.5kg-box.png",
-    desc: "1.5 kg cake box, size 12 × 12 × 9 inch."
-  },
+.brand small{
+  color:var(--muted);
+}
 
-  {
-    id: 9,
-    name: "1.5 kg Base",
-    cat: "Bakery",
-    price: 15,
-    unit: "piece",
-    icon: "📦",
-    image: "/images/base.png",
-    desc: "1.5 kg cake box base."
-  },
+nav{
+  display:flex;
+  gap:20px;
+  align-items:center;
+}
 
-  {
-    id: 10,
-    name: "2 kg Box",
-    cat: "Bakery",
-    price: 45,
-    unit: "piece",
-    icon: "📦",
-    image: "/images/2kg-box.png",
-    desc: "2 kg cake box, size 14 × 14 × 10 inch."
-  },
+nav a{
+  color:var(--ink);
+  text-decoration:none;
+  font-size:14px;
+}
 
-  {
-    id: 11,
-    name: "2 kg Base",
-    cat: "Bakery",
-    price: 20,
-    unit: "piece",
-    icon: "📦",
-    image: "/images/base.png",
-    desc: "2 kg cake box base."
-  },
+.cart-btn,
+.admin-btn{
+  border:1px solid var(--line);
+  background:#fff;
+  padding:10px 14px;
+  border-radius:10px;
+  cursor:pointer;
+}
 
-  {
-    id: 12,
-    name: "Pastree Box (Small)",
-    cat: "Bakery",
-    price: 3.50,
-    unit: "piece",
-    icon: "🧁",
-    image: "/images/pastree-small.png",
-    desc: "Small pastree packaging box."
-  },
+.cart-btn span{
+  background:var(--brand);
+  color:#fff;
+  border-radius:20px;
+  padding:2px 7px;
+  margin-left:4px;
+}
 
-  {
-    id: 13,
-    name: "Pastree Box (Big)",
-    cat: "Bakery",
-    price: 4.50,
-    unit: "piece",
-    icon: "🧁",
-    image: "/images/pastree-big.png",
-    desc: "Big pastree packaging box."
-  },
+.admin-btn{
+  background:var(--ink);
+  color:#fff;
+}
 
-  {
-    id: 14,
-    name: "6 No. Pizza Box",
-    cat: "Pizza",
-    price: 3.35,
-    unit: "piece",
-    icon: "🍕",
-    image: "/images/pizza-box-6x6.png",
-    desc: "Brown pizza box, size 6 × 6 × 1.5 inch."
-  },
+/* HERO */
 
-  {
-    id: 15,
-    name: "7 No. Pizza Box",
-    cat: "Pizza",
-    price: 3.90,
-    unit: "piece",
-    icon: "🍕",
-    image: "/images/pizza-box-7x7.png",
-    desc: "Brown pizza box, size 7 × 7 × 1.5 inch."
-  },
+.hero{
+  background:linear-gradient(135deg,#f2f8f3,#fff);
+  min-height:600px;
+  padding:90px 8%;
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:60px;
+  align-items:center;
+}
 
-  {
-    id: 16,
-    name: "8 No. Pizza Box",
-    cat: "Pizza",
-    price: 4.50,
-    unit: "piece",
-    icon: "🍕",
-    image: "/images/pizza-box-8x8.png",
-    desc: "Brown pizza box, size 8 × 8 × 1.5 inch."
-  },
+.badge,
+.eyebrow{
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:1.5px;
+  color:var(--brand);
+}
 
-  {
-    id: 17,
-    name: "9 No. Pizza Box",
-    cat: "Pizza",
-    price: 5.75,
-    unit: "piece",
-    icon: "🍕",
-    image: "/images/pizza-box-9x9.png",
-    desc: "Brown pizza box, size 9 × 9 × 1.5 inch."
-  },
+h1{
+  font-size:62px;
+  line-height:1.03;
+  margin:16px 0;
+}
 
-  {
-    id: 18,
-    name: "10 No. Pizza Box",
-    cat: "Pizza",
-    price: 6,
-    unit: "piece",
-    icon: "🍕",
-    image: "/images/pizza-box-10x10.png"
-    desc: "Brown pizza box, size 10 × 10 × 1.5 inch."
-  },
+.hero h1 span{
+  color:var(--brand);
+}
 
-  {
-    id: 19,
-    name: "12 No. Pizza Box",
-    cat: "Pizza",
-    price: 12,
-    unit: "piece",
-    icon: "🍕",
-    image: "/images/pizza-box-12x12.png",
-    desc: "Brown pizza box, size 12 × 12 × 1.5 inch."
+p{
+  color:var(--muted);
+  line-height:1.65;
+}
+
+.hero-actions{
+  display:flex;
+  gap:12px;
+  margin:28px 0;
+}
+
+.primary,
+.secondary{
+  border:0;
+  border-radius:10px;
+  padding:13px 19px;
+  font-weight:700;
+  cursor:pointer;
+  text-decoration:none;
+  display:inline-block;
+}
+
+.primary{
+  background:var(--brand);
+  color:#fff;
+}
+
+.secondary{
+  background:#fff;
+  border:1px solid var(--line);
+  color:var(--ink);
+}
+
+.stats{
+  display:flex;
+  gap:35px;
+  margin-top:45px;
+}
+
+.stats b,
+.stats small{
+  display:block;
+}
+
+.stats b{
+  font-size:23px;
+}
+
+.stats small{
+  color:var(--muted);
+  margin-top:5px;
+}
+
+/* HERO CARD */
+
+.hero-card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:45px;
+  box-shadow:0 20px 60px #17351d18;
+}
+
+.box-art{
+  height:260px;
+  position:relative;
+  margin:auto;
+  max-width:330px;
+}
+
+.box-top{
+  position:absolute;
+  top:15px;
+  left:50px;
+  width:210px;
+  height:100px;
+  background:#d6b887;
+  transform:skew(-35deg);
+  border:2px solid #b7945d;
+}
+
+.box-front{
+  position:absolute;
+  top:95px;
+  left:65px;
+  width:210px;
+  height:125px;
+  background:#c9a56d;
+  border:2px solid #a8834b;
+  display:grid;
+  place-items:center;
+  font-weight:900;
+  letter-spacing:2px;
+  color:#fff;
+}
+
+.box-side{
+  position:absolute;
+  top:95px;
+  left:275px;
+  width:40px;
+  height:125px;
+  background:#b58d50;
+  transform:skewY(-35deg);
+}
+
+/* SECTION */
+
+.section{
+  padding:80px 8%;
+}
+
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:20px;
+  margin-bottom:30px;
+}
+
+.section h2{
+  font-size:38px;
+  margin:8px 0 25px;
+}
+
+.filters{
+  display:flex;
+  gap:10px;
+}
+
+.filters input,
+.filters select{
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:9px;
+  background:#fff;
+}
+
+/* PRODUCT GRID */
+
+.product-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:18px;
+}
+
+/* PRODUCT CARD */
+
+.product{
+  border:1px solid var(--line);
+  border-radius:15px;
+  overflow:hidden;
+  background:#fff;
+}
+
+/*
+  IMPORTANT:
+  Image ko fixed container ke andar rakha gaya hai.
+  Isse image bahar nahi niklegi.
+*/
+
+.product-img{
+  height:220px;
+  width:100%;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  padding:12px;
+}
+
+/* PRODUCT IMAGE FIX */
+
+.product-img img{
+  display:block;
+  width:100%;
+  height:100%;
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+  object-position:center;
+}
+
+/* PRODUCT BODY */
+
+.product-body{
+  padding:18px;
+}
+
+.product h3{
+  margin:0 0 8px;
+  font-size:17px;
+}
+
+.product p{
+  margin:8px 0;
+}
+
+.price{
+  font-size:20px;
+  font-weight:800;
+  margin:12px 0;
+}
+
+.product button{
+  width:100%;
+}
+
+/* FEATURES */
+
+.feature-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+}
+
+.feature-grid article{
+  border:1px solid var(--line);
+  padding:22px;
+  border-radius:14px;
+  background:#fff;
+  cursor:pointer;
+  transition:all .25s ease;
+  box-shadow:0 2px 8px rgba(17,17,17,.03);
+}
+
+.feature-grid article:hover,
+.feature-grid article:focus-within,
+.feature-grid article.active{
+  transform:translateY(-3px);
+  border-color:var(--brand);
+  box-shadow:0 12px 26px rgba(225,6,0,.12);
+  background:linear-gradient(180deg,#fff,#fff6f5);
+}
+
+.feature-grid article b{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:22px;
+  margin-bottom:10px;
+}
+
+.feature-grid article p{
+  margin:0;
+  color:var(--muted);
+  font-size:18px;
+  line-height:1.5;
+}
+
+.wide{
+  max-width:750px;
+}
+
+/* CONTACT */
+
+.contact{
+  background:var(--light);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.contact h2{
+  margin-bottom:5px;
+}
+
+/* FOOTER */
+
+footer{
+  padding:30px 8%;
+  display:flex;
+  justify-content:space-between;
+  border-top:1px solid var(--line);
+  color:var(--muted);
+  align-items:center;
+}
+
+/* MODAL */
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:#0008;
+  display:grid;
+  place-items:center;
+  z-index:50;
+  padding:20px;
+}
+
+.hidden{
+  display:none;
+}
+
+.modal-box{
+  background:#fff;
+  border-radius:18px;
+  padding:30px;
+  width:min(600px,100%);
+  max-height:90vh;
+  overflow:auto;
+  position:relative;
+}
+
+.modal-box.large{
+  width:min(800px,100%);
+}
+
+.close{
+  position:absolute;
+  right:16px;
+  top:12px;
+  border:0;
+  background:none;
+  font-size:28px;
+  cursor:pointer;
+}
+
+/* FORM */
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+.form-grid label{
+  font-size:13px;
+  font-weight:700;
+}
+
+.form-grid input,
+.form-grid textarea,
+.form-grid select{
+  display:block;
+  width:100%;
+  margin-top:6px;
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:11px;
+  font:inherit;
+}
+
+.span2{
+  grid-column:span 2;
+}
+
+.full{
+  width:100%;
+  margin-top:18px;
+}
+
+/* CART */
+
+.cart-row{
+  display:grid;
+  grid-template-columns:1fr auto auto;
+  gap:12px;
+  align-items:center;
+  padding:14px 0;
+  border-bottom:1px solid var(--line);
+}
+
+.qty{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.qty input{
+  width:64px;
+  height:34px;
+  text-align:center;
+  border:1px solid var(--line);
+  border-radius:8px;
+  font-size:16px;
+  font-weight:700;
+  color:var(--ink);
+}
+
+.qty button{
+  border:1px solid var(--line);
+  background:#fff;
+  padding:4px 9px;
+}
+
+.cart-total{
+  display:flex;
+  justify-content:space-between;
+  padding:20px 0;
+  font-size:19px;
+}
+
+/* TOAST */
+
+#toast{
+  position:fixed;
+  bottom:25px;
+  right:25px;
+  background:#172018;
+  color:#fff;
+  padding:13px 18px;
+  border-radius:10px;
+  display:none;
+  z-index:100;
+}
+
+/* RECEIPT */
+
+.receipt-box{
+  width:min(620px,100%);
+}
+
+.receipt-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:start;
+  gap:18px;
+  margin-bottom:10px;
+}
+
+.receipt-header h2{
+  margin:6px 0 0;
+}
+
+.status-pill{
+  background:#eafaf0;
+  border:1px solid #8ed5a8;
+  color:#0e7a3d;
+  padding:8px 12px;
+  border-radius:999px;
+  font-weight:700;
+  font-size:12px;
+}
+
+.receipt-card{
+  background:var(--light);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:18px;
+  display:grid;
+  gap:10px;
+  margin:16px 0;
+}
+
+.receipt-row,
+.receipt-total{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:center;
+  line-height:1.5;
+}
+
+.receipt-row span,
+.receipt-total span{
+  color:var(--muted);
+}
+
+.receipt-row b,
+.receipt-total b{
+  font-size:14px;
+  color:var(--ink);
+  text-align:right;
+}
+
+.receipt-divider{
+  height:1px;
+  background:var(--line);
+  margin:4px 0;
+}
+
+.receipt-items{
+  list-style:none;
+  padding:0;
+  margin:0;
+  display:grid;
+  gap:8px;
+}
+
+.receipt-items li{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  font-size:14px;
+}
+
+.receipt-total.grand{
+  font-size:18px;
+  font-weight:800;
+}
+
+.receipt-total.grand b{
+  font-size:18px;
+}
+
+.hero-actions.home-history-row{
+  margin-top:0;
+}
+
+.history-home-btn{
+  width:auto;
+}
+
+.receipt-history-search{
+  margin:12px 0 18px;
+}
+
+.receipt-history-search label{
+  display:block;
+  font-size:13px;
+  font-weight:700;
+  color:var(--muted);
+  margin-bottom:8px;
+}
+
+.receipt-history-search input{
+  width:100%;
+  padding:11px 12px;
+  border:1px solid var(--line);
+  border-radius:9px;
+  font:inherit;
+}
+
+.receipt-history-panel{
+  display:grid;
+  gap:10px;
+  margin-top:18px;
+}
+
+.receipt-history-panel .history-btn{
+  display:block;
+  width:100%;
+  text-align:left;
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:8px;
+  padding:10px 12px;
+  cursor:pointer;
+  font:inherit;
+  color:var(--ink);
+}
+
+.receipt-history-panel .history-empty{
+  padding:12px;
+  background:var(--light);
+  border:1px dashed var(--line);
+  border-radius:8px;
+  color:var(--muted);
+}
+
+.receipt-actions{
+  display:flex;
+  gap:10px;
+  margin-top:18px;
+  margin-bottom:12px;
+}
+
+.receipt-actions button{
+  flex:1;
+}
+
+.receipt-history{
+  margin-top:12px;
+  padding-top:12px;
+  border-top:1px solid var(--line);
+}
+
+.receipt-history h3{
+  margin:0 0 10px;
+  font-size:14px;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+  color:var(--muted);
+}
+
+.history-empty{
+  padding:10px 12px;
+  background:#fff;
+  border:1px dashed var(--line);
+  border-radius:8px;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.history-btn{
+  display:block;
+  width:100%;
+  text-align:left;
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:8px;
+  padding:10px 12px;
+  margin-bottom:8px;
+  cursor:pointer;
+  font:inherit;
+  color:var(--ink);
+}
+
+.history-btn:hover{
+  border-color:var(--brand);
+  background:#fff8f7;
+}
+
+.empty{
+  padding:30px;
+  text-align:center;
+  color:var(--muted);
+}
+
+/* LOGO */
+
+.brand-logo{
+  width:58px;
+  height:58px;
+  object-fit:contain;
+  display:block;
+}
+
+/* DESKTOP / TABLET */
+
+@media(max-width:900px){
+
+  nav a{
+    display:none;
   }
 
-];
-const RECEIPT_HISTORY_KEY="sp_packagers_receipt_history";
-const WHATSAPP_ORDER_NUMBER = "918887906448";
-let cart=JSON.parse(localStorage.getItem("boxmart_cart")||"[]");
-let currentReceipt=null;
-
-function getReceiptHistory(){
- try{return JSON.parse(localStorage.getItem(RECEIPT_HISTORY_KEY)||"[]");}
- catch{return []}
-}
-function saveReceiptHistory(history){localStorage.setItem(RECEIPT_HISTORY_KEY,JSON.stringify(history));}
-function addReceiptToHistory(order){
- const history=getReceiptHistory();
- const phone=((order && order.customer && order.customer.phone) || "").trim();
- const id=(order && order.id) || "";
- if(!id || !phone){return;}
- const normalizedHistory=history.filter(item=>!(item.id===id && ((item.customer&&item.customer.phone)||"")===phone));
- normalizedHistory.push({...order, storedAt:new Date().toISOString()});
- saveReceiptHistory(normalizedHistory.slice(-10).sort((a,b)=>new Date(b.storedAt)-new Date(a.storedAt)));
-}
-function getReceiptHistoryForPhone(phone){
- const normalized=(phone||"").trim().toLowerCase();
- return getReceiptHistory().filter(item=>((item.customer&&item.customer.phone)||"").trim().toLowerCase()===normalized).sort((a,b)=>new Date(b.storedAt)-new Date(a.storedAt));
-}
-
-function money(n){return n?"₹"+n.toLocaleString("en-IN"):"Quote"}
-function renderProducts(){
- const q=(document.getElementById("search").value||"").toLowerCase(), c=document.getElementById("category").value;
- const list=products.filter(p=>(c==="all"||p.cat===c)&&(p.name.toLowerCase().includes(q)||p.desc.toLowerCase().includes(q)));
- document.getElementById("products").innerHTML=list.map(p=>`
- <article class="product"><div class="product-img">
-${p.image ? `<img src="${p.image}" alt="${p.name}" loading="lazy">` : p.icon}
-</div>
- <small>${p.cat}</small><h3>${p.name}</h3><p>${p.desc}</p><div class="price">${money(p.price)} <small>${p.price?"/ "+p.unit:""}</small></div>
- ${p.price?`<button class="primary" data-action="add-to-cart" data-id="${p.id}">Add to Cart</button>`:`<button class="secondary" data-action="open-quote">Request Quote</button>`}
- </div></article>`).join("")||'<div class="empty">No products found.</div>';
-}
-function save(){localStorage.setItem("boxmart_cart",JSON.stringify(cart));updateCount()}
-function updateCount(){document.getElementById("cartCount").textContent=cart.reduce((s,x)=>s+x.qty,0)}
-function addToCart(id){const p=products.find(x=>x.id===id);let x=cart.find(x=>x.id===id);if(x)x.qty++;else cart.push({id,qty:1});save();toast(p.name+" added to cart")}
-function openCart(){renderCart();document.getElementById("cartModal").classList.remove("hidden")}
-function closeCart(){document.getElementById("cartModal").classList.add("hidden")}
-function updateCartSummary(){
- const total=cart.reduce((s,x)=>s+products.find(p=>p.id===x.id).price*x.qty,0);
- document.getElementById("cartTotal").textContent=money(total);
- updateCount();
-}
-function renderCart(){
- const el=document.getElementById("cartItems");
- if(!cart.length){el.innerHTML='<div class="empty">Your cart is empty.</div>';document.getElementById("cartTotal").textContent="₹0";return}
- let total=0;
- el.innerHTML=cart.map(x=>{let p=products.find(a=>a.id===x.id);let t=p.price*x.qty;total+=t;return `<div class="cart-row"><div><b>${p.name}</b><small>${money(p.price)} each</small></div><div class="qty"><button onclick="changeQty(${p.id},-1)">−</button><input type="number" min="1" value="${x.qty}" onchange="setQty(${p.id}, this.value, true)" oninput="setQty(${p.id}, this.value, false)" aria-label="Quantity for ${p.name}"><button onclick="changeQty(${p.id},1)">+</button></div><b>${money(t)}</b></div>`}).join("");
- document.getElementById("cartTotal").textContent=money(total);
- updateCount();
-}
-function setQty(id,value,shouldRender=true){
- const blank = value === "" || value === null || value === undefined;
- let x=cart.find(a=>a.id===id);
- if(!x) return;
-
- if(blank){
-   x.qty=1;
-   save();
-   if(shouldRender) renderCart();
-   else updateCartSummary();
-   return;
- }
-
- const parsed=Number(value);
- if(!Number.isFinite(parsed) || parsed < 1){
-   x.qty=1;
-   save();
-   if(shouldRender) renderCart();
-   else updateCartSummary();
-   return;
- }
-
- x.qty=parsed;
- save();
- if(shouldRender) renderCart();
- else updateCartSummary();
-}
-function changeQty(id,d){let x=cart.find(a=>a.id===id);x.qty+=d;if(x.qty<=0)cart=cart.filter(a=>a.id!==id);save();renderCart()}
-function openCheckout(){if(!cart.length){toast("Add a product first");return}closeCart();renderCheckout();document.getElementById("checkoutModal").classList.remove("hidden")}
-function closeCheckout(){document.getElementById("checkoutModal").classList.add("hidden")}
-function getCurrentReceipt(){
- if (window.currentReceipt && window.currentReceipt.id) return window.currentReceipt;
- if (currentReceipt && currentReceipt.id) return currentReceipt;
- const modal=document.getElementById("receiptContent");
- if (modal && modal.dataset && modal.dataset.receipt) {
-   try { const parsed = JSON.parse(modal.dataset.receipt); if (parsed && parsed.id) return parsed; } catch (err) {}
- }
- const text=modal ? modal.textContent : "";
- const match = text.match(/Order\s*ID\s*:?\s*([A-Z0-9-]+)/i) || text.match(/([A-Z]+-\d+)/i);
- const orderId = match ? match[1] : "";
- const history = getReceiptHistory();
- return history.find(item => item.id === orderId) || null;
-}
-function openReceipt(order){
- currentReceipt = order;
- window.currentReceipt = order;
- const receipt=document.getElementById("receiptContent");
- receipt.dataset.receipt = JSON.stringify(order);
- const phone=((order.customer && order.customer.phone) || "").trim();
- const history=getReceiptHistoryForPhone(phone).filter(item=>item.id!==order.id);
- const allItems=(order.items||[]).map(item=>`<li><span>${item.name} × ${item.qty}</span><b>${money(item.price * item.qty)}</b></li>`).join("") || '<li><span>No items</span></li>';
- const historyMarkup = `<div class="receipt-history"><h3>Receipt History</h3>${history.length ? history.map(item=>`<button class="history-btn" data-action="open-history-receipt" data-order-id="${item.id}">${item.id} • ${new Date(item.storedAt || item.createdAt).toLocaleDateString("en-IN")}</button>`).join("") : '<div class="history-empty">No previous receipt yet for this phone number.</div>'}</div>`;
- receipt.innerHTML=`<div class="receipt-card">
-  <div class="receipt-row"><span>Order ID</span><b>${order.id}</b></div>
-  <div class="receipt-row"><span>Customer</span><b>${(order.customer && order.customer.name) || "-"}</b></div>
-  <div class="receipt-row"><span>Phone</span><b>${phone || "-"}</b></div>
-  <div class="receipt-row"><span>Business</span><b>${(order.customer && order.customer.business) || "-"}</b></div>
-  <div class="receipt-row"><span>Address</span><b>${(order.customer && order.customer.address) || "-"}</b></div>
-  <div class="receipt-row"><span>Payment</span><b>${order.payment || "Cash on Delivery"}</b></div>
-  <div class="receipt-divider"></div>
-  <ul class="receipt-items">${allItems}</ul>
-  <div class="receipt-divider"></div>
-  <div class="receipt-total"><span>Subtotal</span><b>${money(order.subtotal || 0)}</b></div>
-  <div class="receipt-total"><span>Delivery</span><b>${(order.delivery && Number(order.delivery) > 0) ? money(order.delivery) : "FREE"}</b></div>
-  <div class="receipt-total grand"><span>Total</span><b>${money(order.total || 0)}</b></div>
- </div>${historyMarkup}`;
- document.getElementById("receiptModal").classList.remove("hidden");
-}
-function closeReceipt(){
- document.getElementById("receiptModal").classList.add("hidden");
- currentReceipt = null;
- if (window) window.currentReceipt = null;
- const modal=document.getElementById("receiptContent");
- if (modal) delete modal.dataset.receipt;
-}
-function getWhatsAppOrderMessage(order){
- const items = (order.items || []).map(item => `• ${item.name} x ${item.qty} = ₹${Number(item.price || 0) * Number(item.qty || 1)}` ).join("\n");
- return [
-  "*SP Packagers Order*",
-  "",
-  `Order ID: ${order.id}`,
-  `Customer: ${(order.customer && order.customer.name) || "-"}`,
-  `Phone: ${(order.customer && order.customer.phone) || "-"}`,
-  `Business: ${(order.customer && order.customer.business) || "-"}`,
-  `Address: ${(order.customer && order.customer.address) || "-"}`,
-  `Payment: ${order.payment || "Cash on Delivery"}`,
-  "",
-  "Items:",
-  items || "No items",
-  "",
-  `Subtotal: ₹${Number(order.subtotal || 0).toLocaleString("en-IN")}`,
-  `Delivery: ₹${Number(order.delivery || 0).toLocaleString("en-IN")}`,
-  `Total: ₹${Number(order.total || 0).toLocaleString("en-IN")}`
- ].join("\n");
-}
-function openWhatsAppOrder(order){
- const activeOrder = order || getCurrentReceipt();
- if (!activeOrder) return;
- const message = encodeURIComponent(getWhatsAppOrderMessage(activeOrder));
- const url = `https://wa.me/${WHATSAPP_ORDER_NUMBER}?text=${message}`;
- window.open(url, "_blank", "noopener,noreferrer");
-}
-function downloadReceipt(){
- const current = getCurrentReceipt();
- if (!current) { toast("No receipt available to download"); return; }
- const text = [
-  'SP Packagers Receipt',
-  '-------------------',
-  `Order ID: ${current.id}`,
-  `Customer: ${(current.customer && current.customer.name) || '-'}`,
-  `Phone: ${(current.customer && current.customer.phone) || '-'}`,
-  `Business: ${(current.customer && current.customer.business) || '-'}`,
-  `Address: ${(current.customer && current.customer.address) || '-'}`,
-  `Payment: ${current.payment || 'Cash on Delivery'}`,
-  '',
-  'Items:',
-  ...(current.items || []).map(item => `- ${item.name} x ${item.qty} = ₹${(Number(item.price) * Number(item.qty)).toLocaleString('en-IN')}`),
-  '',
-  `Subtotal: ₹${Number(current.subtotal || 0).toLocaleString('en-IN')}`,
-  `Delivery: ₹${Number(current.delivery || 0).toLocaleString('en-IN')}`,
-  `Total: ₹${Number(current.total || 0).toLocaleString('en-IN')}`
- ].join('\n');
- const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
- const url = URL.createObjectURL(blob);
- const a = document.createElement('a');
- a.href = url;
- a.download = `receipt-${current.id}.txt`;
- a.style.display = 'none';
- document.body.appendChild(a);
-
- try {
-   a.click();
- } catch (err) {
-   window.open(url, '_blank');
- }
-
- setTimeout(() => {
-   a.remove();
-   URL.revokeObjectURL(url);
- }, 1500);
-}
-function renderCheckout(){
- let subtotal=cart.reduce((s,x)=>s+products.find(p=>p.id===x.id).price*x.qty,0),delivery=0;
- document.getElementById("checkoutSummary").innerHTML=`<div class="cart-total"><span>Subtotal</span><b>${money(subtotal)}</b></div><div class="cart-total"><span>Delivery</span><b>${delivery?money(delivery):"FREE"}</b></div><div class="cart-total"><span>Grand Total</span><b>${money(subtotal+delivery)}</b></div>`;
-}
-document.getElementById("checkoutForm").addEventListener("submit",async e=>{
- e.preventDefault();let f=new FormData(e.target), subtotal=cart.reduce((s,x)=>s+products.find(p=>p.id===x.id).price*x.qty,0),delivery=0;
- let order={customer:{name:f.get("name"),phone:f.get("phone"),email:f.get("email"),business:f.get("business"),address:f.get("address")},items:cart.map(x=>{let p=products.find(p=>p.id===x.id);return {id:p.id,name:p.name,qty:x.qty,price:p.price}}),subtotal,delivery,total:subtotal+delivery,payment:f.get("payment"),note:f.get("note")};
- try{let r=await fetch("/api/orders",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(order)});let saved=await r.json();if(!r.ok)throw Error(saved.error);addReceiptToHistory(saved);cart=[];save();closeCheckout();e.target.reset();openWhatsAppOrder(saved);openReceipt(saved);toast("Order placed: "+saved.id);}catch(err){toast("Order saved failed. Is the server running?")}
-});
-function openReceiptHistory(){
- const modal=document.getElementById("receiptHistoryModal");
- const input=document.getElementById("receiptHistoryPhone");
- const list=document.getElementById("receiptHistoryListHome");
- input.value="";
- list.innerHTML='';
- modal.classList.remove("hidden");
-}
-function closeReceiptHistory(){document.getElementById("receiptHistoryModal").classList.add("hidden")}
-function renderReceiptHistoryHome(phone){
- const list=document.getElementById("receiptHistoryListHome");
- const history=getReceiptHistoryForPhone(phone).sort((a,b)=>new Date(b.storedAt||b.createdAt)-new Date(a.storedAt||a.createdAt));
- if(!history.length){list.innerHTML='<div class="history-empty">No previous receipt yet for this phone number.</div>';return;}
- list.innerHTML=history.map(item=>`<button class="history-btn" data-action="open-history-receipt" data-order-id="${item.id}">${item.id} • ${new Date(item.storedAt || item.createdAt).toLocaleDateString("en-IN")}</button>`).join("");
-}
-function openQuote(){document.getElementById("quoteModal").classList.remove("hidden")}
-function closeQuote(){document.getElementById("quoteModal").classList.add("hidden")}
-function submitQuote(e){e.preventDefault();closeQuote();toast("Custom quote enquiry received. Connect this form to email/WhatsApp for live enquiries.")}
-function toast(msg){let t=document.getElementById("toast");t.textContent=msg;t.style.display="block";setTimeout(()=>t.style.display="none",2800)}
-function showAdmin(){location.href="/admin.html"}
-
-document.addEventListener("click", (event) => {
-  const trigger = event.target.closest("[data-action]");
-  if (!trigger) return;
-
-  const action = trigger.dataset.action;
-
-  if (action === "open-cart") openCart();
-  if (action === "close-cart") closeCart();
-  if (action === "open-checkout") openCheckout();
-  if (action === "close-checkout") closeCheckout();
-  if (action === "close-receipt") closeReceipt();
-  if (action === "send-whatsapp") openWhatsAppOrder(getCurrentReceipt());
-  if (action === "open-receipt-history") openReceiptHistory();
-  if (action === "close-receipt-history") closeReceiptHistory();
-  if (action === "open-history-receipt") {
-    const orderId = trigger.dataset.orderId;
-    const order = getReceiptHistory().find(item => item.id === orderId);
-    if (order) openReceipt(order);
+  .hero{
+    grid-template-columns:1fr;
+    padding-top:55px;
   }
-  if (action === "open-quote") openQuote();
-  if (action === "close-quote") closeQuote();
-  if (action === "add-to-cart") {
-    const id = Number(trigger.dataset.id || 0);
-    if (id) addToCart(id);
+
+  h1{
+    font-size:45px;
   }
-});
 
-document.addEventListener("click", (event) => {
-  const card = event.target.closest(".feature-grid article");
-  if (!card) return;
-  document.querySelectorAll(".feature-grid article").forEach((item) => {
-    item.classList.toggle("active", item === card);
-  });
-});
+  .product-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
 
-document.getElementById("receiptHistorySearchBtn").addEventListener("click",()=>{
- const phone=document.getElementById("receiptHistoryPhone").value.trim();
- if(!phone){toast("Enter your phone number");return;}
- renderReceiptHistoryHome(phone);
-});
-document.getElementById("receiptHistoryPhone").addEventListener("keydown", (event)=>{
- if (event.key === "Enter") {
-   const phone=document.getElementById("receiptHistoryPhone").value.trim();
-   if(!phone){toast("Enter your phone number");return;}
-   renderReceiptHistoryHome(phone);
- }
-});
-document.getElementById("downloadReceiptBtn").addEventListener("click", downloadReceipt);
-renderProducts();updateCount();
+  .feature-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .section-head{
+    align-items:start;
+    flex-direction:column;
+  }
+
+  .product-img{
+    height:210px;
+  }
+}
+
+/* MOBILE */
+
+@media(max-width:560px){
+
+  .product-grid,
+  .feature-grid,
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .span2{
+    grid-column:auto;
+  }
+
+  .hero{
+    padding:55px 6%;
+  }
+
+  .section{
+    padding:55px 6%;
+  }
+
+  .hero-card{
+    padding:20px;
+  }
+
+  .contact,
+  footer{
+    display:block;
+  }
+
+  .contact .primary{
+    margin-top:15px;
+  }
+
+  .stats{
+    gap:18px;
+  }
+
+  .filters{
+    width:100%;
+  }
+
+  .filters input,
+  .filters select{
+    width:50%;
+  }
+
+  .receipt-header{
+    display:block;
+  }
+
+  .receipt-row,
+  .receipt-total,
+  .receipt-items li{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:4px;
+  }
+
+  .receipt-row b,
+  .receipt-total b{
+    font-size:13px;
+    text-align:left;
+  }
+
+  .product-img{
+    height:230px;
+  }
+
+  .product-img img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+  }
+}
