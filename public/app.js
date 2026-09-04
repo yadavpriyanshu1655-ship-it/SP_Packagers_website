@@ -1,16 +1,214 @@
-const products=[
-{id:1,name:"Pizza Box No. 6",cat:"Pizza",price:18,unit:"piece",icon:"🍕",desc:"Corrugated pizza box for regular pizzas."},
-{id:2,name:"Pizza Box No. 7",cat:"Pizza",price:22,unit:"piece",icon:"🍕",desc:"Strong takeaway pizza packaging."},
-{id:3,name:"Pizza Box No. 8",cat:"Pizza",price:26,unit:"piece",icon:"🍕",desc:"Large pizza box for restaurants."},
-{id:4,name:"Pizza Box No. 9",cat:"Pizza",price:32,unit:"piece",icon:"🍕",desc:"Extra-large pizza packaging."},
-{id:5,name:"Food Delivery Box",cat:"Food",price:12,unit:"piece",icon:"🍱",desc:"Multi-purpose food delivery carton."},
-{id:6,name:"Burger Box",cat:"Food",price:8,unit:"piece",icon:"🍔",desc:"Compact burger and snack box."},
-{id:7,name:"Courier Box Small",cat:"Courier",price:15,unit:"piece",icon:"📦",desc:"E-commerce shipping box."},
-{id:8,name:"Courier Box Medium",cat:"Courier",price:24,unit:"piece",icon:"📦",desc:"Medium-size shipping carton."},
-{id:9,name:"Bakery Cake Box",cat:"Bakery",price:30,unit:"piece",icon:"🎂",desc:"Cake and bakery presentation box."},
-{id:10,name:"Sweet Box",cat:"Bakery",price:14,unit:"piece",icon:"🍬",desc:"Food-grade sweet packaging."},
-{id:11,name:"Retail Folding Carton",cat:"Retail",price:20,unit:"piece",icon:"🛍️",desc:"Retail product packaging."},
-{id:12,name:"Custom Printed Box",cat:"Retail",price:0,unit:"quote",icon:"🎨",desc:"Logo, artwork and custom-size printing."}
+const products = [
+
+  {
+    id: 1,
+    name: "250g Box",
+    cat: "Bakery",
+    price: 7.50,
+    unit: "piece",
+    icon: "📦",
+    image: "/images/250g-box.png",
+    desc: "250g cake box, size 7 × 7 × 5 inch."
+  },
+
+  {
+    id: 2,
+    name: "250g Base",
+    cat: "Bakery",
+    price: 3.50,
+    unit: "piece",
+    icon: "📦",
+    image: "/images/base.png",
+    desc: "250g cake box base."
+  },
+
+  {
+    id: 3,
+    name: "½ kg Box",
+    cat: "Bakery",
+    price: 10,
+    unit: "piece",
+    icon: "📦",
+    image: "/images/half-kg-box.png",
+    desc: "½ kg cake box, size 8 × 8 × 5.5 inch."
+  },
+
+  {
+    id: 4,
+    name: "½ kg Window Box",
+    cat: "Bakery",
+    price: 12,
+    unit: "piece",
+    icon: "📦",
+    image: "/images/half-kg-window-box.png",
+    desc: "½ kg window cake box, size 8 × 8 × 5.5 inch."
+  },
+
+  {
+    id: 5,
+    name: "½ kg Base",
+    cat: "Bakery",
+    price: 4,
+    unit: "piece",
+    icon: "📦",
+    image: "/images/base.png",
+    desc: "½ kg cake box base."
+  },
+
+  {
+    id: 6,
+    name: "1 kg Box",
+    cat: "Bakery",
+    price: 15,
+    unit: "piece",
+    icon: "📦",
+    image: "/images/1kg-box.png",
+    desc: "1 kg cake box, size 10 × 10 × 6 inch."
+  },
+
+  {
+    id: 7,
+    name: "1 kg Base",
+    cat: "Bakery",
+    price: 7,
+    unit: "piece",
+    icon: "📦",
+    image: "/images/base.png",
+    desc: "1 kg cake box base."
+  },
+
+  {
+    id: 8,
+    name: "1.5 kg Box",
+    cat: "Bakery",
+    price: 40,
+    unit: "piece",
+    icon: "📦",
+    image: "/images/1.5kg-box.png",
+    desc: "1.5 kg cake box, size 12 × 12 × 9 inch."
+  },
+
+  {
+    id: 9,
+    name: "1.5 kg Base",
+    cat: "Bakery",
+    price: 15,
+    unit: "piece",
+    icon: "📦",
+    image: "/images/base.png",
+    desc: "1.5 kg cake box base."
+  },
+
+  {
+    id: 10,
+    name: "2 kg Box",
+    cat: "Bakery",
+    price: 45,
+    unit: "piece",
+    icon: "📦",
+    image: "/images/2kg-box.png",
+    desc: "2 kg cake box, size 14 × 14 × 10 inch."
+  },
+
+  {
+    id: 11,
+    name: "2 kg Base",
+    cat: "Bakery",
+    price: 20,
+    unit: "piece",
+    icon: "📦",
+    image: "/images/base.png",
+    desc: "2 kg cake box base."
+  },
+
+  {
+    id: 12,
+    name: "Pastree Box (Small)",
+    cat: "Bakery",
+    price: 3.50,
+    unit: "piece",
+    icon: "🧁",
+    image: "/images/pastree-small.png",
+    desc: "Small pastree packaging box."
+  },
+
+  {
+    id: 13,
+    name: "Pastree Box (Big)",
+    cat: "Bakery",
+    price: 4.50,
+    unit: "piece",
+    icon: "🧁",
+    image: "/images/pastree-big.png",
+    desc: "Big pastree packaging box."
+  },
+
+  {
+    id: 14,
+    name: "6 No. Pizza Box",
+    cat: "Pizza",
+    price: 3.35,
+    unit: "piece",
+    icon: "🍕",
+    image: "/images/pizza-6.png",
+    desc: "Brown pizza box, size 6 × 6 × 1.5 inch."
+  },
+
+  {
+    id: 15,
+    name: "7 No. Pizza Box",
+    cat: "Pizza",
+    price: 3.90,
+    unit: "piece",
+    icon: "🍕",
+    image: "/images/pizza-7.png",
+    desc: "Brown pizza box, size 7 × 7 × 1.5 inch."
+  },
+
+  {
+    id: 16,
+    name: "8 No. Pizza Box",
+    cat: "Pizza",
+    price: 4.50,
+    unit: "piece",
+    icon: "🍕",
+    image: "/images/pizza-8.png",
+    desc: "Brown pizza box, size 8 × 8 × 1.5 inch."
+  },
+
+  {
+    id: 17,
+    name: "9 No. Pizza Box",
+    cat: "Pizza",
+    price: 5.75,
+    unit: "piece",
+    icon: "🍕",
+    image: "/images/pizza-9.png",
+    desc: "Brown pizza box, size 9 × 9 × 1.5 inch."
+  },
+
+  {
+    id: 18,
+    name: "10 No. Pizza Box",
+    cat: "Pizza",
+    price: 6,
+    unit: "piece",
+    icon: "🍕",
+    image: "/images/pizza-10.png",
+    desc: "Brown pizza box, size 10 × 10 × 1.5 inch."
+  },
+
+  {
+    id: 19,
+    name: "12 No. Pizza Box",
+    cat: "Pizza",
+    price: 12,
+    unit: "piece",
+    icon: "🍕",
+    image: "/images/pizza-12.png",
+    desc: "Brown pizza box, size 12 × 12 × 1.5 inch."
+  }
+
 ];
 const RECEIPT_HISTORY_KEY="sp_packagers_receipt_history";
 const WHATSAPP_ORDER_NUMBER = "918887906448";
@@ -41,7 +239,9 @@ function renderProducts(){
  const q=(document.getElementById("search").value||"").toLowerCase(), c=document.getElementById("category").value;
  const list=products.filter(p=>(c==="all"||p.cat===c)&&(p.name.toLowerCase().includes(q)||p.desc.toLowerCase().includes(q)));
  document.getElementById("products").innerHTML=list.map(p=>`
- <article class="product"><div class="product-img">${p.icon}</div><div class="product-body">
+ <article class="product"><div class="product-img">
+${p.image ? `<img src="${p.image}" alt="${p.name}" loading="lazy">` : p.icon}
+</div>
  <small>${p.cat}</small><h3>${p.name}</h3><p>${p.desc}</p><div class="price">${money(p.price)} <small>${p.price?"/ "+p.unit:""}</small></div>
  ${p.price?`<button class="primary" data-action="add-to-cart" data-id="${p.id}">Add to Cart</button>`:`<button class="secondary" data-action="open-quote">Request Quote</button>`}
  </div></article>`).join("")||'<div class="empty">No products found.</div>';
