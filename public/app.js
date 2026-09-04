@@ -128,7 +128,7 @@ const products = [
     price: 3.50,
     unit: "piece",
     icon: "🧁",
-    image: "/images/pastree-small.png",
+    image: "/images/small-pastree-box.png",
     desc: "Small pastree packaging box."
   },
 
@@ -139,7 +139,7 @@ const products = [
     price: 4.50,
     unit: "piece",
     icon: "🧁",
-    image: "/images/pastree-big.png",
+    image: "/images/big-pastree-box.png",
     desc: "Big pastree packaging box."
   },
 
