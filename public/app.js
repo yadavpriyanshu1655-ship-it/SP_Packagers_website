@@ -242,15 +242,11 @@ function addReceiptToHistory(order) {
   const history = getReceiptHistory();
 
   const phone =
-    ((order &&
-      order.customer &&
-      order.customer.phone) || "").trim();
+    ((order && order.customer && order.customer.phone) || "").trim();
 
   const id = (order && order.id) || "";
 
-  if (!id || !phone) {
-    return;
-  }
+  if (!id || !phone) return;
 
   const normalizedHistory = history.filter(
     item =>
@@ -282,9 +278,7 @@ function getReceiptHistoryForPhone(phone) {
   return getReceiptHistory()
     .filter(
       item =>
-        (
-          (item.customer && item.customer.phone) || ""
-        )
+        ((item.customer && item.customer.phone) || "")
           .trim()
           .toLowerCase() === normalized
     )
@@ -303,10 +297,10 @@ function money(n) {
 
 
 function renderProducts() {
+
   const q =
-    (
-      document.getElementById("search").value || ""
-    ).toLowerCase();
+    (document.getElementById("search").value || "")
+      .toLowerCase();
 
   const c =
     document.getElementById("category").value;
@@ -321,59 +315,59 @@ function renderProducts() {
   );
 
   document.getElementById("products").innerHTML =
-    list
-      .map(
-        p => `
-        <article class="product">
+    list.map(
+      p => `
+      <article class="product">
 
-          <div class="product-img">
-            ${
-              p.image
-                ? `<img src="${p.image}" alt="${p.name}" loading="lazy">`
-                : p.icon
-            }
+        <div class="product-img">
+          ${
+            p.image
+              ? `<img src="${p.image}"
+                      alt="${p.name}"
+                      loading="lazy">`
+              : p.icon
+          }
+        </div>
+
+        <div class="product-body">
+
+          <small>${p.cat}</small>
+
+          <h3>${p.name}</h3>
+
+          <p>${p.desc}</p>
+
+          <div class="price">
+            ${money(p.price)}
+            <small>
+              ${p.price ? "/ " + p.unit : ""}
+            </small>
           </div>
 
-          <div class="product-body">
+          ${
+            p.price
+              ? `
+                <button
+                  class="primary"
+                  data-action="add-to-cart"
+                  data-id="${p.id}">
+                  Add to Cart
+                </button>
+              `
+              : `
+                <button
+                  class="secondary"
+                  data-action="open-quote">
+                  Request Quote
+                </button>
+              `
+          }
 
-            <small>${p.cat}</small>
+        </div>
 
-            <h3>${p.name}</h3>
-
-            <p>${p.desc}</p>
-
-            <div class="price">
-              ${money(p.price)}
-              <small>
-                ${p.price ? "/ " + p.unit : ""}
-              </small>
-            </div>
-
-            ${
-              p.price
-                ? `
-                  <button
-                    class="primary"
-                    data-action="add-to-cart"
-                    data-id="${p.id}">
-                    Add to Cart
-                  </button>
-                `
-                : `
-                  <button
-                    class="secondary"
-                    data-action="open-quote">
-                    Request Quote
-                  </button>
-                `
-            }
-
-          </div>
-
-        </article>
+      </article>
       `
-      )
-      .join("") ||
+    ).join("") ||
     '<div class="empty">No products found.</div>';
 }
 
@@ -390,14 +384,12 @@ function save() {
 
 function updateCount() {
   document.getElementById("cartCount").textContent =
-    cart.reduce(
-      (s, x) => s + x.qty,
-      0
-    );
+    cart.reduce((s, x) => s + x.qty, 0);
 }
 
 
 function addToCart(id) {
+
   const p = products.find(x => x.id === id);
 
   let x = cart.find(x => x.id === id);
@@ -413,15 +405,14 @@ function addToCart(id) {
 
   save();
 
-  toast(
-    p.name + " added to cart"
-  );
+  if (p) {
+    toast(p.name + " added to cart");
+  }
 }
 
 
 function openCart() {
   renderCart();
-
   document
     .getElementById("cartModal")
     .classList.remove("hidden");
@@ -436,11 +427,12 @@ function closeCart() {
 
 
 function updateCartSummary() {
+
   const total = cart.reduce(
-    (s, x) =>
-      s +
-      products.find(p => p.id === x.id).price *
-        x.qty,
+    (s, x) => {
+      const p = products.find(p => p.id === x.id);
+      return s + (p ? p.price * x.qty : 0);
+    },
     0
   );
 
@@ -452,10 +444,12 @@ function updateCartSummary() {
 
 
 function renderCart() {
+
   const el =
     document.getElementById("cartItems");
 
   if (!cart.length) {
+
     el.innerHTML =
       '<div class="empty">Your cart is empty.</div>';
 
@@ -469,9 +463,11 @@ function renderCart() {
 
   el.innerHTML = cart
     .map(x => {
-      const p = products.find(
-        a => a.id === x.id
-      );
+
+      const p =
+        products.find(a => a.id === x.id);
+
+      if (!p) return "";
 
       const t = p.price * x.qty;
 
@@ -482,9 +478,7 @@ function renderCart() {
 
           <div>
             <b>${p.name}</b>
-            <small>
-              ${money(p.price)} each
-            </small>
+            <small>${money(p.price)} each</small>
           </div>
 
           <div class="qty">
@@ -525,49 +519,29 @@ function renderCart() {
 
 
 function setQty(id, value, shouldRender = true) {
+
   const blank =
     value === "" ||
     value === null ||
     value === undefined;
 
-  const x = cart.find(a => a.id === id);
+  const x =
+    cart.find(a => a.id === id);
 
   if (!x) return;
 
   if (blank) {
     x.qty = 1;
+  } else {
 
-    save();
+    const parsed = Number(value);
 
-    if (shouldRender) {
-      renderCart();
+    if (!Number.isFinite(parsed) || parsed < 1) {
+      x.qty = 1;
     } else {
-      updateCartSummary();
+      x.qty = parsed;
     }
-
-    return;
   }
-
-  const parsed = Number(value);
-
-  if (
-    !Number.isFinite(parsed) ||
-    parsed < 1
-  ) {
-    x.qty = 1;
-
-    save();
-
-    if (shouldRender) {
-      renderCart();
-    } else {
-      updateCartSummary();
-    }
-
-    return;
-  }
-
-  x.qty = parsed;
 
   save();
 
@@ -580,27 +554,26 @@ function setQty(id, value, shouldRender = true) {
 
 
 function changeQty(id, d) {
-  const x = cart.find(
-    a => a.id === id
-  );
+
+  const x =
+    cart.find(a => a.id === id);
 
   if (!x) return;
 
   x.qty += d;
 
   if (x.qty <= 0) {
-    cart = cart.filter(
-      a => a.id !== id
-    );
+    cart =
+      cart.filter(a => a.id !== id);
   }
 
   save();
-
   renderCart();
 }
 
 
 function openCheckout() {
+
   if (!cart.length) {
     toast("Add a product first");
     return;
@@ -624,6 +597,7 @@ function closeCheckout() {
 
 
 function getCurrentReceipt() {
+
   if (
     window.currentReceipt &&
     window.currentReceipt.id
@@ -639,110 +613,79 @@ function getCurrentReceipt() {
   }
 
   const modal =
-    document.getElementById(
-      "receiptContent"
-    );
+    document.getElementById("receiptContent");
 
   if (
     modal &&
     modal.dataset &&
     modal.dataset.receipt
   ) {
-    try {
-      const parsed =
-        JSON.parse(
-          modal.dataset.receipt
-        );
 
-      if (
-        parsed &&
-        parsed.id
-      ) {
+    try {
+
+      const parsed =
+        JSON.parse(modal.dataset.receipt);
+
+      if (parsed && parsed.id) {
         return parsed;
       }
+
     } catch (err) {}
   }
 
   const text =
-    modal
-      ? modal.textContent
-      : "";
+    modal ? modal.textContent : "";
 
   const match =
-    text.match(
-      /Order\s*ID\s*:?\s*([A-Z0-9-]+)/i
-    ) ||
-    text.match(
-      /([A-Z]+-\d+)/i
-    );
+    text.match(/Order\s*ID\s*:?\s*([A-Z0-9-]+)/i) ||
+    text.match(/([A-Z]+-\d+)/i);
 
   const orderId =
-    match
-      ? match[1]
-      : "";
+    match ? match[1] : "";
 
   const history =
     getReceiptHistory();
 
-  return history.find(
-    item => item.id === orderId
-  ) || null;
+  return (
+    history.find(
+      item => item.id === orderId
+    ) || null
+  );
 }
 
 
 function openReceipt(order) {
-  currentReceipt = order;
 
-  window.currentReceipt =
-    order;
+  currentReceipt = order;
+  window.currentReceipt = order;
 
   const receipt =
-    document.getElementById(
-      "receiptContent"
-    );
+    document.getElementById("receiptContent");
 
   receipt.dataset.receipt =
     JSON.stringify(order);
 
   const phone =
     (
-      (order.customer &&
-        order.customer.phone) ||
-      ""
-    ).trim();
+      order.customer &&
+      order.customer.phone
+    ) || "";
 
   const history =
     getReceiptHistoryForPhone(phone)
-      .filter(
-        item =>
-          item.id !== order.id
-      );
+      .filter(item => item.id !== order.id);
 
   const allItems =
     (order.items || [])
       .map(
         item =>
-          `
-          <li>
-            <span>
-              ${item.name} × ${item.qty}
-            </span>
-
-            <b>
-              ${money(
-                item.price *
-                item.qty
-              )}
-            </b>
-          </li>
-          `
+          `<li>
+            <span>${item.name} × ${item.qty}</span>
+            <b>${money(item.price * item.qty)}</b>
+          </li>`
       )
       .join("") ||
-    `
-      <li>
-        <span>No items</span>
-      </li>
-    `;
+      "<li><span>No items</span></li>";
 
   const historyMarkup = `
     <div class="receipt-history">
@@ -754,8 +697,7 @@ function openReceipt(order) {
           ? history
               .map(
                 item =>
-                  `
-                  <button
+                  `<button
                     class="history-btn"
                     data-action="open-history-receipt"
                     data-order-id="${item.id}">
@@ -763,17 +705,13 @@ function openReceipt(order) {
                     ${new Date(
                       item.storedAt ||
                       item.createdAt
-                    ).toLocaleDateString(
-                      "en-IN"
-                    )}
-                  </button>
-                  `
+                    ).toLocaleDateString("en-IN")}
+                  </button>`
               )
               .join("")
           : `
             <div class="history-empty">
-              No previous receipt yet
-              for this phone number.
+              No previous receipt yet for this phone number.
             </div>
           `
       }
@@ -782,7 +720,6 @@ function openReceipt(order) {
   `;
 
   receipt.innerHTML = `
-
     <div class="receipt-card">
 
       <div class="receipt-row">
@@ -795,8 +732,7 @@ function openReceipt(order) {
         <b>
           ${
             (order.customer &&
-              order.customer.name) ||
-            "-"
+              order.customer.name) || "-"
           }
         </b>
       </div>
@@ -811,8 +747,7 @@ function openReceipt(order) {
         <b>
           ${
             (order.customer &&
-              order.customer.business) ||
-            "-"
+              order.customer.business) || "-"
           }
         </b>
       </div>
@@ -822,8 +757,7 @@ function openReceipt(order) {
         <b>
           ${
             (order.customer &&
-              order.customer.address) ||
-            "-"
+              order.customer.address) || "-"
           }
         </b>
       </div>
@@ -831,10 +765,7 @@ function openReceipt(order) {
       <div class="receipt-row">
         <span>Payment</span>
         <b>
-          ${
-            order.payment ||
-            "Cash on Delivery"
-          }
+          ${order.payment || "Cash on Delivery"}
         </b>
       </div>
 
@@ -848,9 +779,7 @@ function openReceipt(order) {
 
       <div class="receipt-total">
         <span>Subtotal</span>
-        <b>
-          ${money(order.subtotal || 0)}
-        </b>
+        <b>${money(order.subtotal || 0)}</b>
       </div>
 
       <div class="receipt-total">
@@ -867,9 +796,7 @@ function openReceipt(order) {
 
       <div class="receipt-total grand">
         <span>Total</span>
-        <b>
-          ${money(order.total || 0)}
-        </b>
+        <b>${money(order.total || 0)}</b>
       </div>
 
     </div>
@@ -884,6 +811,7 @@ function openReceipt(order) {
 
 
 function closeReceipt() {
+
   document
     .getElementById("receiptModal")
     .classList.add("hidden");
@@ -895,9 +823,7 @@ function closeReceipt() {
   }
 
   const modal =
-    document.getElementById(
-      "receiptContent"
-    );
+    document.getElementById("receiptContent");
 
   if (modal) {
     delete modal.dataset.receipt;
@@ -906,6 +832,7 @@ function closeReceipt() {
 
 
 function getWhatsAppOrderMessage(order) {
+
   const items =
     (order.items || [])
       .map(
@@ -923,27 +850,22 @@ function getWhatsAppOrderMessage(order) {
     `Order ID: ${order.id}`,
     `Customer: ${
       (order.customer &&
-        order.customer.name) ||
-      "-"
+        order.customer.name) || "-"
     }`,
     `Phone: ${
       (order.customer &&
-        order.customer.phone) ||
-      "-"
+        order.customer.phone) || "-"
     }`,
     `Business: ${
       (order.customer &&
-        order.customer.business) ||
-      "-"
+        order.customer.business) || "-"
     }`,
     `Address: ${
       (order.customer &&
-        order.customer.address) ||
-      "-"
+        order.customer.address) || "-"
     }`,
     `Payment: ${
-      order.payment ||
-      "Cash on Delivery"
+      order.payment || "Cash on Delivery"
     }`,
     "",
     "Items:",
@@ -963,17 +885,15 @@ function getWhatsAppOrderMessage(order) {
 
 
 function openWhatsAppOrder(order) {
+
   const activeOrder =
-    order ||
-    getCurrentReceipt();
+    order || getCurrentReceipt();
 
   if (!activeOrder) return;
 
   const message =
     encodeURIComponent(
-      getWhatsAppOrderMessage(
-        activeOrder
-      )
+      getWhatsAppOrderMessage(activeOrder)
     );
 
   const url =
@@ -988,13 +908,12 @@ function openWhatsAppOrder(order) {
 
 
 function downloadReceipt() {
+
   const current =
     getCurrentReceipt();
 
   if (!current) {
-    toast(
-      "No receipt available to download"
-    );
+    toast("No receipt available to download");
     return;
   }
 
@@ -1004,23 +923,19 @@ function downloadReceipt() {
     `Order ID: ${current.id}`,
     `Customer: ${
       (current.customer &&
-        current.customer.name) ||
-      "-"
+        current.customer.name) || "-"
     }`,
     `Phone: ${
       (current.customer &&
-        current.customer.phone) ||
-      "-"
+        current.customer.phone) || "-"
     }`,
     `Business: ${
       (current.customer &&
-        current.customer.business) ||
-      "-"
+        current.customer.business) || "-"
     }`,
     `Address: ${
       (current.customer &&
-        current.customer.address) ||
-      "-"
+        current.customer.address) || "-"
     }`,
     `Payment: ${
       current.payment ||
@@ -1028,25 +943,25 @@ function downloadReceipt() {
     }`,
     "",
     "Items:",
+
     ...(current.items || [])
       .map(
         item =>
           `- ${item.name} x ${item.qty} = ₹${
-            (
-              Number(item.price) *
-              Number(item.qty)
-            ).toLocaleString(
-              "en-IN"
-            )
+            Number(item.price) *
+            Number(item.qty)
           }`
       ),
+
     "",
     `Subtotal: ₹${Number(
       current.subtotal || 0
     ).toLocaleString("en-IN")}`,
+
     `Delivery: ₹${Number(
       current.delivery || 0
     ).toLocaleString("en-IN")}`,
+
     `Total: ₹${Number(
       current.total || 0
     ).toLocaleString("en-IN")}`
@@ -1079,10 +994,7 @@ function downloadReceipt() {
   try {
     a.click();
   } catch (err) {
-    window.open(
-      url,
-      "_blank"
-    );
+    window.open(url, "_blank");
   }
 
   setTimeout(() => {
@@ -1093,48 +1005,51 @@ function downloadReceipt() {
 
 
 function renderCheckout() {
+
   const subtotal =
     cart.reduce(
-      (s, x) =>
-        s +
-        products.find(
-          p => p.id === x.id
-        ).price *
-        x.qty,
+      (s, x) => {
+
+        const p =
+          products.find(
+            p => p.id === x.id
+          );
+
+        return s +
+          (p ? p.price * x.qty : 0);
+      },
       0
     );
 
   const delivery = 0;
 
-  document.getElementById(
-    "checkoutSummary"
-  ).innerHTML = `
+  document
+    .getElementById("checkoutSummary")
+    .innerHTML = `
 
-    <div class="cart-total">
-      <span>Subtotal</span>
-      <b>${money(subtotal)}</b>
-    </div>
+      <div class="cart-total">
+        <span>Subtotal</span>
+        <b>${money(subtotal)}</b>
+      </div>
 
-    <div class="cart-total">
-      <span>Delivery</span>
-      <b>
-        ${
-          delivery
-            ? money(delivery)
-            : "FREE"
-        }
-      </b>
-    </div>
+      <div class="cart-total">
+        <span>Delivery</span>
+        <b>
+          ${
+            delivery
+              ? money(delivery)
+              : "FREE"
+          }
+        </b>
+      </div>
 
-    <div class="cart-total">
-      <span>Grand Total</span>
-      <b>
-        ${money(
-          subtotal + delivery
-        )}
-      </b>
-    </div>
-  `;
+      <div class="cart-total">
+        <span>Grand Total</span>
+        <b>
+          ${money(subtotal + delivery)}
+        </b>
+      </div>
+    `;
 }
 
 
@@ -1147,24 +1062,27 @@ document
       e.preventDefault();
 
       const f =
-        new FormData(
-          e.target
-        );
+        new FormData(e.target);
 
       const subtotal =
         cart.reduce(
-          (s, x) =>
-            s +
-            products.find(
-              p => p.id === x.id
-            ).price *
-            x.qty,
+          (s, x) => {
+
+            const p =
+              products.find(
+                p => p.id === x.id
+              );
+
+            return s +
+              (p ? p.price * x.qty : 0);
+          },
           0
         );
 
       const delivery = 0;
 
       const order = {
+
         customer: {
           name: f.get("name"),
           phone: f.get("phone"),
@@ -1175,6 +1093,7 @@ document
 
         items:
           cart.map(x => {
+
             const p =
               products.find(
                 p => p.id === x.id
@@ -1190,14 +1109,9 @@ document
 
         subtotal,
         delivery,
-        total:
-          subtotal + delivery,
-
-        payment:
-          f.get("payment"),
-
-        note:
-          f.get("note")
+        total: subtotal + delivery,
+        payment: f.get("payment"),
+        note: f.get("note")
       };
 
       try {
@@ -1207,16 +1121,12 @@ document
             "/api/orders",
             {
               method: "POST",
-
               headers: {
                 "Content-Type":
                   "application/json"
               },
-
               body:
-                JSON.stringify(
-                  order
-                )
+                JSON.stringify(order)
             }
           );
 
@@ -1224,14 +1134,10 @@ document
           await r.json();
 
         if (!r.ok) {
-          throw Error(
-            saved.error
-          );
+          throw Error(saved.error);
         }
 
-        addReceiptToHistory(
-          saved
-        );
+        addReceiptToHistory(saved);
 
         cart = [];
 
@@ -1241,17 +1147,13 @@ document
 
         e.target.reset();
 
-        openWhatsAppOrder(
-          saved
-        );
+        openWhatsAppOrder(saved);
 
-        openReceipt(
-          saved
-        );
+        openReceipt(saved);
 
         toast(
           "Order placed: " +
-            saved.id
+          saved.id
         );
 
       } catch (err) {
@@ -1265,6 +1167,7 @@ document
 
 
 function openReceiptHistory() {
+
   const modal =
     document.getElementById(
       "receiptHistoryModal"
@@ -1284,55 +1187,48 @@ function openReceiptHistory() {
 
   list.innerHTML = "";
 
-  modal.classList.remove(
-    "hidden"
-  );
+  modal.classList.remove("hidden");
 }
 
 
 function closeReceiptHistory() {
+
   document
     .getElementById(
       "receiptHistoryModal"
     )
-    .classList.add(
-      "hidden"
-    );
+    .classList.add("hidden");
 }
 
 
-function renderReceiptHistoryHome(
-  phone
-) {
+function renderReceiptHistoryHome(phone) {
+
   const list =
     document.getElementById(
       "receiptHistoryListHome"
     );
 
   const history =
-    getReceiptHistoryForPhone(
-      phone
-    ).sort(
-      (a, b) =>
-        new Date(
-          b.storedAt ||
+    getReceiptHistoryForPhone(phone)
+      .sort(
+        (a, b) =>
+          new Date(
+            b.storedAt ||
             b.createdAt
-        ) -
-        new Date(
-          a.storedAt ||
+          ) -
+          new Date(
+            a.storedAt ||
             a.createdAt
-        )
-    );
+          )
+      );
 
   if (!history.length) {
 
-    list.innerHTML =
-      `
+    list.innerHTML = `
       <div class="history-empty">
-        No previous receipt yet
-        for this phone number.
+        No previous receipt yet for this phone number.
       </div>
-      `;
+    `;
 
     return;
   }
@@ -1341,8 +1237,7 @@ function renderReceiptHistoryHome(
     history
       .map(
         item =>
-          `
-          <button
+          `<button
             class="history-btn"
             data-action="open-history-receipt"
             data-order-id="${item.id}">
@@ -1350,11 +1245,8 @@ function renderReceiptHistoryHome(
             ${new Date(
               item.storedAt ||
               item.createdAt
-            ).toLocaleDateString(
-              "en-IN"
-            )}
-          </button>
-          `
+            ).toLocaleDateString("en-IN")}
+          </button>`
       )
       .join("");
 }
@@ -1362,27 +1254,20 @@ function renderReceiptHistoryHome(
 
 function openQuote() {
   document
-    .getElementById(
-      "quoteModal"
-    )
-    .classList.remove(
-      "hidden"
-    );
+    .getElementById("quoteModal")
+    .classList.remove("hidden");
 }
 
 
 function closeQuote() {
   document
-    .getElementById(
-      "quoteModal"
-    )
-    .classList.add(
-      "hidden"
-    );
+    .getElementById("quoteModal")
+    .classList.add("hidden");
 }
 
 
 function submitQuote(e) {
+
   e.preventDefault();
 
   closeQuote();
@@ -1394,28 +1279,25 @@ function submitQuote(e) {
 
 
 function toast(msg) {
+
   const t =
-    document.getElementById(
-      "toast"
-    );
+    document.getElementById("toast");
 
   t.textContent = msg;
 
-  t.style.display =
-    "block";
+  t.style.display = "block";
 
   setTimeout(
-    () =>
-      t.style.display =
-        "none",
+    () => {
+      t.style.display = "none";
+    },
     2800
   );
 }
 
 
 function showAdmin() {
-  location.href =
-    "/admin.html";
+  location.href = "/admin.html";
 }
 
 
@@ -1433,40 +1315,22 @@ document.addEventListener(
     const action =
       trigger.dataset.action;
 
-    if (
-      action ===
-      "open-cart"
-    )
+    if (action === "open-cart")
       openCart();
 
-    if (
-      action ===
-      "close-cart"
-    )
+    if (action === "close-cart")
       closeCart();
 
-    if (
-      action ===
-      "open-checkout"
-    )
+    if (action === "open-checkout")
       openCheckout();
 
-    if (
-      action ===
-      "close-checkout"
-    )
+    if (action === "close-checkout")
       closeCheckout();
 
-    if (
-      action ===
-      "close-receipt"
-    )
+    if (action === "close-receipt")
       closeReceipt();
 
-    if (
-      action ===
-      "send-whatsapp"
-    )
+    if (action === "send-whatsapp")
       openWhatsAppOrder(
         getCurrentReceipt()
       );
@@ -1495,27 +1359,17 @@ document.addEventListener(
         getReceiptHistory()
           .find(
             item =>
-              item.id ===
-              orderId
+              item.id === orderId
           );
 
-      if (order) {
-        openReceipt(
-          order
-        );
-      }
+      if (order)
+        openReceipt(order);
     }
 
-    if (
-      action ===
-      "open-quote"
-    )
+    if (action === "open-quote")
       openQuote();
 
-    if (
-      action ===
-      "close-quote"
-    )
+    if (action === "close-quote")
       closeQuote();
 
     if (
@@ -1525,14 +1379,13 @@ document.addEventListener(
 
       const id =
         Number(
-          trigger.dataset.id ||
-            0
+          trigger.dataset.id || 0
         );
 
-      if (id) {
+      if (id)
         addToCart(id);
-      }
     }
+
   }
 );
 
@@ -1560,6 +1413,7 @@ document.addEventListener(
         );
 
       });
+
   }
 );
 
@@ -1626,6 +1480,7 @@ document
           phone
         );
       }
+
     }
   );
 
@@ -1641,5 +1496,4 @@ document
 
 
 renderProducts();
-
 updateCount();
