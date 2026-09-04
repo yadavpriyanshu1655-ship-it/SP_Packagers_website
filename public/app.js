@@ -150,7 +150,7 @@ const products = [
     price: 3.35,
     unit: "piece",
     icon: "🍕",
-    image: "/images/pizza-6.png",
+    image: "/images/pizza-box-6x6.png",
     desc: "Brown pizza box, size 6 × 6 × 1.5 inch."
   },
 
@@ -161,7 +161,7 @@ const products = [
     price: 3.90,
     unit: "piece",
     icon: "🍕",
-    image: "/images/pizza-7.png",
+    image: "/images/pizza-box-7x7.png",
     desc: "Brown pizza box, size 7 × 7 × 1.5 inch."
   },
 
@@ -172,7 +172,7 @@ const products = [
     price: 4.50,
     unit: "piece",
     icon: "🍕",
-    image: "/images/pizza-8.png",
+    image: "/images/pizza-box-8x8.png",
     desc: "Brown pizza box, size 8 × 8 × 1.5 inch."
   },
 
@@ -183,7 +183,7 @@ const products = [
     price: 5.75,
     unit: "piece",
     icon: "🍕",
-    image: "/images/pizza-9.png",
+    image: "/images/pizza-box-9x9.png",
     desc: "Brown pizza box, size 9 × 9 × 1.5 inch."
   },
 
@@ -194,7 +194,7 @@ const products = [
     price: 6,
     unit: "piece",
     icon: "🍕",
-    image: "/images/pizza-10.png",
+    image: "/images/pizza-box-10x10.png"
     desc: "Brown pizza box, size 10 × 10 × 1.5 inch."
   },
 
@@ -205,7 +205,7 @@ const products = [
     price: 12,
     unit: "piece",
     icon: "🍕",
-    image: "/images/pizza-12.png",
+    image: "/images/pizza-box-12x12.png",
     desc: "Brown pizza box, size 12 × 12 × 1.5 inch."
   }
 
